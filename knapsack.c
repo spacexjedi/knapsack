@@ -55,9 +55,8 @@ pokemon_t pokedex[] = {
 };
 
 
-
  
-int n = sizeof (items) / sizeof (item_t); // apenas escolhendo um n para percorrer toda a estrutura
+int n = sizeof (pokedex) / sizeof (pokemon_t); // apenas escolhendo um n para percorrer toda a estrutura
  
 int *knapsack (int w) { // função da mochila recebe o peso da mochila
 
@@ -69,11 +68,11 @@ int *knapsack (int w) { // função da mochila recebe o peso da mochila
         m[i] = &mm[i * (w + 1)];
         for (j = 0; j <= w; j++) {
             m[i][j] = m[i - 1][j];
-            for (k = 1; k <= items[i - 1].count; k++) {
-                if (k * items[i - 1].weight > j) {
+            for (k = 1; k <= pokedex[i - 1].count; k++) {
+                if (k * pokedex[i - 1].pokeweight > j) {
                     break;
                 }
-                v = m[i - 1][j - k * items[i - 1].weight] + k * items[i - 1].value;
+                v = m[i - 1][j - k * pokedex[i - 1].pokeweight] + k * pokedex[i - 1].pokevalue;
                 if (v > m[i][j]) {
                     m[i][j] = v;
                 }
@@ -83,9 +82,9 @@ int *knapsack (int w) { // função da mochila recebe o peso da mochila
     s = calloc(n, sizeof (int)); // laço para colocar os items escolhidos no vetor de printar
     for (i = n, j = w; i > 0; i--) {
         int v = m[i][j];
-        for (k = 0; v != m[i - 1][j] + k * items[i - 1].value; k++) {
+        for (k = 0; v != m[i - 1][j] + k * pokedex[i - 1].pokevalue; k++) {
             s[i - 1]++;
-            j -= items[i - 1].weight;
+            j -= pokedex[i - 1].pokeweight;
         }
     }
     free(mm); // liberando os ponteiros
@@ -111,8 +110,8 @@ int main () {
         if (s[i]) {
             printf("%d %-22s %5d %5d %5d\n", pokedex[i].pokecode, pokedex[i].pokename, s[i], s[i] * pokedex[i].pokeweight, s[i] * pokedex[i].pokevalue);
             tc += s[i];
-            tw += s[i] * items[i].weight;
-            tv += s[i] * items[i].value;
+            tw += s[i] * pokedex[i].pokeweight;
+            tv += s[i] * pokedex[i].pokevalue;
         }
     }
     printf("%-22s %5d %5d %5d\n", "count, weight, value_stats:", tc, tw, tv); // retorna quantidade | peso | nível de stats
